@@ -1,6 +1,10 @@
 package ahorcado;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class main {
@@ -8,9 +12,9 @@ public class main {
         Scanner scanner = new Scanner(System.in);
 
         // escojer la palabra
-        String[] palabrasGrupales = {"hola", "trabajo", "casa", "programacion", "nombre", "mexico", "microfono", "carro", "celular", "computadora", "programa"};
-        int random = (int) (Math.random() * palabrasGrupales.length);
-        String palabraSecreta = palabrasGrupales[random];
+        List<String> palabrasGrupales = cargarPalabrasDesdeArchivo("palabrasSecretas.txt");
+        int random = (int) (Math.random() * palabrasGrupales.size());
+        String palabraSecreta = palabrasGrupales.get(random);
 
         // poner '_' por cada letra
         char[] palabraAdivinada = new char[palabraSecreta.length()];
@@ -82,5 +86,21 @@ public class main {
         }
 
         return acierto;
+    }
+
+    public static List<String> cargarPalabrasDesdeArchivo(String nombreArchivo) {
+        List<String> palabras = new ArrayList<>();
+
+        try {
+            Scanner scanner = new Scanner(new File(nombreArchivo));
+            while (scanner.hasNextLine()) {
+                palabras.add(scanner.nextLine());
+            }
+            scanner.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("No se pudo cargar el archivo de palabras: " + e.getMessage());
+        }
+
+        return palabras;
     }
 }
