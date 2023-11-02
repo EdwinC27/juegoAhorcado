@@ -6,59 +6,81 @@ import java.util.Scanner;
 public class main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+
         // escojer la palabra
         String[] palabrasGrupales = {"hola", "trabajo", "casa", "programacion", "nombre", "mexico", "microfono", "carro", "celular", "computadora", "programa"};
-        int random = (int) (Math.random() * 10);
-        char[] arr = palabrasGrupales[random].toCharArray();
+        int random = (int) (Math.random() * palabrasGrupales.length);
+        String palabraSecreta = palabrasGrupales[random];
+
+        // poner '_' por cada letra
+        char[] palabraAdivinada = new char[palabraSecreta.length()];
+        Arrays.fill(palabraAdivinada, '_');
+
         int intentos = 10;
 
-        char[] caracteres = new char[arr.length];
+        System.out.println("La palabra tiene " + palabraSecreta.length() + " caracteres.");
 
-        System.out.println("La palabar tiene " + arr.length + " caracteres");
+        while (intentos > 0) {
+            System.out.println("****************************************");
+            System.out.println("Intentos restantes: " + intentos);
+            System.out.print("Palabra adivinada: ");
+            mostrarPalabraAdivinada(palabraAdivinada);
 
-        for (int i = 0; i < caracteres.length; i++) {
-            caracteres[i] = '_';
-        }
+            char caracter = obtenerCaracter(scanner);
 
-        while (intentos >= 0) { // inicia el juego
-            try {
-                System.out.print("Caracter: ");
-                char caracter = scanner.nextLine().charAt(0);
+            boolean acierto = actualizarPalabraAdivinada(palabraSecreta, palabraAdivinada, caracter);
 
-                // si esta el caracter
-                boolean ban = false;
-                for (int i = 0; i < arr.length; i++) {
-                    if (arr[i] == caracter) {
-                        caracteres[i] = arr[i];
-                        ban = true;
-                    }
-                }
-
-                if (Arrays.equals(caracteres, arr)) { // comprobar si ya esta la cadena
-                    System.out.println("\nFelicidades ganaste la palabra era: ");
-                    System.out.println(arr);
+            if (acierto) {
+                if (Arrays.equals(palabraAdivinada, palabraSecreta.toCharArray())) {
+                    System.out.println("¡Felicidades, ganaste! La palabra era: " + palabraSecreta);
                     break;
-
-                } else if (ban) { // no hacer nada
-
-                } else { // no estaba la letra
-                    intentos--;
-                    if (intentos == 0) {
-                        System.out.println("Perdiste");
-                        break;
-                    }
-                    System.out.println("Te quedan " + intentos + " intentos");
                 }
-
-                for (int i = 0; i < arr.length; i++) { // mostrar la posicion del juego
-                    System.out.print(caracteres[i]);
+            } else {
+                intentos--;
+                System.out.println("Letra incorrecta. Te quedan " + intentos + " intentos.");
+                if (intentos == 0) {
+                    System.out.println("¡Perdiste! La palabra era: " + palabraSecreta);
                 }
+            }
+        }
+    }
 
-                System.out.println("\n");
+
+    public static void mostrarPalabraAdivinada(char[] palabraAdivinada) {
+        for (char c : palabraAdivinada) {
+            System.out.print(c + " ");
+        }
+        System.out.println();
+    }
+
+
+    public static char obtenerCaracter(Scanner scanner) {
+        char caracter = ' ';
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            try {
+                System.out.print("Ingresa una letra: ");
+                caracter = scanner.nextLine().charAt(0);
+                entradaValida = true;
             } catch (Exception e) {
-                System.out.println("\nError al ingresar el dato vuelva a intentar\n");
+                System.out.println("Entrada no válida. Ingresa una sola letra.");
             }
         }
 
+        return caracter;
+    }
+
+
+    public static boolean actualizarPalabraAdivinada(String palabraSecreta, char[] palabraAdivinada, char caracter) {
+        boolean acierto = false;
+        for (int i = 0; i < palabraSecreta.length(); i++) {
+            if (palabraSecreta.charAt(i) == caracter) {
+                palabraAdivinada[i] = caracter;
+                acierto = true;
+            }
+        }
+
+        return acierto;
     }
 }
